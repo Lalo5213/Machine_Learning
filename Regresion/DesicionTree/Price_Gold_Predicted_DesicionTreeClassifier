@@ -1,1 +1,93 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Thu Apr 27 13:44:32 2023
+
+GOLD PRICE PREDICTION WITH PYTHON
+
+@author: Eduardo Castillo Garcia
+
+WORK FLOW
+Gold Price Data -----> Data Pre processing -----> Data Analisys 
+----> Train Test Slit----Random Forest Regressor-DesicionTreeRegressor
+"""
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.tree import DecisionTreeRegressor
+from sklearn import metrics
+
+
+""""DATA COLLECTION AND PROCESING  """
+df=pd.read_csv('D:/MachineLearnig/gld_price_data.csv')
+
+#We have 2290 files and 6 columns
+
+#Getting some information about data set
+
+info=df.info()
+#In this data set not have null values
+
+#Checking the number of missing values
+missing= df.isnull().sum()
+#Dont have null values.
+
+#Getiing the stadistical measures of the data
+measure_gold=df.describe()
+
+
+#CORRELATION
+
+Corre=df.corr()
+
+#Construction f heatmap to undestando correlation
+plt.figure(figsize=(8,8))
+sns.heatmap(Corre, cbar=True,square=True,fmt='.1f',annot=True,annot_kws={'size':8},cmap='Blues')
+
+#Correlation Values : GLD
+
+print(Corre['GLD'])
+
+#Checking the distribution of the data GLD price
+sns.displot(df['GLD'],color='green',kind='kde')
+
+#Spliting the Features and Target
+
+#Drop the column date
+
+X=df.drop(['Date','GLD'],axis=1)
+y=df['GLD']
+
+#Spliting into Training data and Test Data
+
+X_train,X_test,Y_train,Y_test=train_test_split(X,y,test_size=0.2,random_state=2)
+
+#Model Training : Random Forest Regressor
+
+#regresor = RandomForestClassifier(n_estimators=100, random_state=42)
+regresor=DecisionTreeRegressor(max_depth=5)
+regresor.fit(X_test,Y_test)
+
+y_pred=regresor.predict(X_test)
+#R Squared
+error_square=metrics.r2_score(Y_test, y_pred)
+
+print('Efectividad del modelo: ',error_square)
+
+#Actual Values vs Values in a plot
+
+Y_test=list(Y_test)
+plt.plot(Y_test,color='yellow', label='Actual Values')
+plt.plot(y_pred,color='Orange', label='Predicted Values')
+plt.title('Actual price vs Predicted Values')
+plt.xlabel('Number of values')
+plt.ylabel('GLD price')
+plt.legend()
+plt.show()
+
+
+
 
