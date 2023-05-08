@@ -1,0 +1,68 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Mar 29 12:07:59 2023
+Estimar un modelo que me permita fijar como variable dependiente el precio
+y el precio va depender de unas varibles independientes que explicaran si va dismuniur o
+aumentar el precio 
+
+@author: casti
+"""
+##Librerias###
+import matplotlib.pyplot as plt
+import pandas as pd
+import pylab as pl
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn import datasets
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import confusion_matrix
+from sklearn.metrics import precision_score
+from  sklearn import datasets,linear_model
+
+#DATA WRANGLING
+dataset=pd.read_csv('D:\MachineLearnig\kc_house_data.csv')
+df=dataset.head(10)
+dataset.describe()
+
+#La función value_counts() devuelve una serie que contiene recuentos de valores únicos . Devuelve un objeto que estará en orden descendente, de modo que su primer elemento será el elemento que ocurra con más frecuencia.
+#Variables independientes
+#Visualizamos un histograma para ver la relacion de X/ Y
+dataset['bedrooms'].value_counts().plot(kind='bar')
+plt.title('No de Habitaciones')
+plt.xlabel('Habitaciones')
+plt.ylabel('Frecuencia ')
+sns.despine
+
+#Scatterplot localizacion
+plt.figure(figsize=(10,10))
+sns.jointplot(x=dataset.lat.values,y=dataset.long.values,size=10)
+plt.xlabel('Longitud',fontsize=15)
+plt.ylabel('Latitud ',fontsize=15)
+plt.show ()
+#plt1=plt()
+sns.despine
+#Filtramos las variable dependiete 
+labels=dataset['price']
+#Hacemos una binarizacion
+conv_dates=[1 if values == 2014 else 0 for values in dataset.date ]
+
+dataset['date']=conv_dates
+#price ya esta fijada como variable dependiente
+#Variables independientes
+#axis =1  porque son variables columna
+train=dataset.drop(['id','price'],axis=1)
+
+
+#Estimamos el modelo
+
+x_train, x_test, y_train, y_test = train_test_split(train,labels,test_size=0.2,random_state=2)
+#Definimos el algoritmo a utiliza
+lr_multiple=linear_model.LinearRegression()
+#Entrenamos el algortimo
+#Entrenamos el algoritmo
+lr_multiple.fit(x_train,y_train)
+
+print('Datos del modelo de Regresion Multiple')
+print('R^2:',lr_multiple.score(x_train,y_train))
